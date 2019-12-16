@@ -11,42 +11,28 @@ let data = []
 let list = []
 let cache
 
-fromEvent(newElement, 'input').pipe(
-  map(event => event.target.value)
-)
-  .subscribe(value => cache = value)
+fromEvent(newElement, "input")
+  .pipe(map(event => event.target.value))
+  .subscribe(value => (cache = value))
 
-fromEvent(addElement, 'click')
-  .subscribe(
-    function () {
-      data = []
-      data.push(cache)
-      list.push(cache)
-      data.forEach(element => {
-        listElements.innerHTML += "<li>" + element + "</li>"
-      });
-    }
+fromEvent(addElement, "click").subscribe(function() {
+  data = []
+  data.push(cache)
+  list.push(cache)
+  data.forEach(element => {
+    listElements.innerHTML += "<li>" + element + "</li>"
+  })
+})
+
+fromEvent(search, "input")
+  .pipe(
+    debounceTime(1000),
+    map(event => event.target.value)
   )
-
-fromEvent(search, 'input').pipe(
-  debounceTime(1000),
-  map(event => event.target.value)
-)
-  .subscribe(
-    function (value) {
-      list.forEach(element => {
-        JSON.stringify(element)
-        JSON.stringify(value)
-        if (element === value) {
-          listElementsSearch.innerHTML = element
-        }
-        else {
-          listElementsSearch.innerHTML = "Element not found"
-        }
-      })
-    }
-  )
-
-
-
-
+  .subscribe(function(value) {
+    list.forEach(element => {
+      if (element === value) {
+        listElementsSearch.innerHTML = value
+      }
+    })
+  })
